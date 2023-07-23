@@ -33,6 +33,11 @@ module.exports.validateCampground = (req, res, next) => {
 module.exports.isOwner = async (req, res, next) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
+    // is not campground was added
+    if (!campground) {
+        req.flash('error', 'Cannot find that campground!');
+        return res.redirect('/campgrounds');
+    }
     if (!campground.owner.equals(req.user._id)) {
         req.flash('error', 'No permission to do that');
         return res.redirect(`/campgrounds/${id}`);
